@@ -74,5 +74,53 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    return;
+    // Create a copy of the image
+    RGBTRIPLE copy[height][width];
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            copy[i][j] = image[i][j];
+        }
+    }
+
+    // Iterate over each pixel in the image
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+
+            int totalRed = 0;
+            int totalGreen = 0;
+            int totalBlue = 0;
+            int count = 0;
+
+            for (int di = -1; di <= 1; di++)
+            {
+                for (int dj = -1; dj <= 1; dj++)
+                {
+                    int ni = i + di;
+                    int nj = j + dj;
+
+                    if (ni >= 0 && ni < height && nj >= 0 && nj < width)
+                    {
+                        totalRed += copy[ni][nj].rgbtRed;
+                        totalGreen += copy[ni][nj].rgbtGreen;
+                        totalBlue += copy[ni][nj].rgbtBlue;
+                        count++;
+                    }
+                }
+            }
+
+            float avgRed = (float)totalRed / count;
+            float avgGreen = (float)totalGreen / count;
+            float avgBlue = (float)totalBlue / count;
+
+            // Assign rounded average values back to the original image
+            image[i][j].rgbtRed = (BYTE)round(avgRed);
+            image[i][j].rgbtGreen = (BYTE)round(avgGreen);
+            image[i][j].rgbtBlue = (BYTE)round(avgBlue);
+        }
+    }
 }
